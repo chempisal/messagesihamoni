@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalaConnect | ប្រព័ន្ធទំនាក់ទំនងសាលា និងអាណាព្យាបាល</title>
+  <meta name="description"
+    content="SalaConnect - Bridging communication between teachers and parents for student success.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- AUTHENTICATION PAGE (Login/Register) -->
+  <div id="auth-page" class="auth-page">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">
+          <div class="logo-icon">ស</div>
+        </div>
+        <h2 id="auth-title" class="auth-title">ចូលប្រើប្រាស់ប្រព័ន្ធ</h2>
+        <p id="auth-subtitle" class="auth-subtitle">សូមបញ្ចូលគណនីរបស់អ្នកដើម្បីបន្ត</p>
+      </div>
+
+      <div class="role-selector">
+        <button id="role-parent-btn" class="role-tab active">មាតាបិតា / Parent</button>
+        <button id="role-teacher-btn" class="role-tab">គ្រូបង្រៀន / Teacher</button>
+        <button id="role-admin-btn" class="role-tab">អ្នកគ្រប់គ្រង / Admin</button>
+      </div>
+
+      <form id="auth-form" onsubmit="return false;">
+        <!-- Email / Username -->
+        <div class="form-group">
+          <label id="label-username" for="auth-username">ឈ្មោះគណនី ឬ អ៊ីមែល / Username or Email</label>
+          <input type="text" id="auth-username" class="form-input" required
+            placeholder="e.g., dara@email.com or teacher1">
+        </div>
+
+        <!-- Full Name (Register Only) -->
+        <div id="register-name-group" class="form-group" style="display: none;">
+          <label id="label-fullname" for="auth-fullname">ឈ្មោះពេញ / Full Name</label>
+          <input type="text" id="auth-fullname" class="form-input" placeholder="e.g., Sok Dara">
+        </div>
+
+        <!-- Student ID (Register Parent Only) -->
+        <div id="register-student-group" class="form-group" style="display: none;">
+          <label id="label-studentcode" for="auth-student-id">កូដសិស្ស (សម្រាប់ភ្ជាប់) / Student Code (to link)</label>
+          <input type="text" id="auth-student-id" class="form-input" placeholder="e.g., STU001">
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label id="label-password" for="auth-password">ពាក្យសម្ងាត់ / Password</label>
+          <input type="password" id="auth-password" class="form-input" required placeholder="••••••••">
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="auth-action-btn">ចូលប្រើប្រាស់ / Login</button>
+      </form>
+
+      <div class="auth-switch">
+        <span id="auth-switch-text">មិនទាន់មានគណនីមែនទេ?</span>
+        <a id="auth-switch-link" class="auth-switch-link">ចុះឈ្មោះនៅទីនេះ / Register here</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION CONTAINER -->
+  <div id="app-container" class="app-container" style="display: none;">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo-container">
+        <div class="logo-icon">ស</div>
+        <div class="logo-text">SalaConnect</div>
+      </div>
+
+      <div class="user-profile-badge">
+        <img id="user-avatar" class="profile-avatar"
+          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Profile Picture">
+        <div class="profile-info">
+          <span id="user-display-name" class="profile-name">Loading...</span>
+          <span id="user-display-role" class="profile-role">Loading...</span>
+        </div>
+      </div>
+
+      <ul class="nav-menu">
+        <li id="nav-dashboard" class="nav-item active">
+          <a id="link-dashboard">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+            </svg>
+            <span class="lang-txt" data-kh="ផ្ទាំងគ្រប់គ្រង" data-en="Dashboard">ផ្ទាំងគ្រប់គ្រង</span>
+          </a>
+        </li>
+        <li id="nav-messages" class="nav-item">
+          <a id="link-messages">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+            </svg>
+            <span class="lang-txt" data-kh="សារផ្ញើផ្ទាល់" data-en="Messages">សារផ្ញើផ្ទាល់</span>
+          </a>
+        </li>
+        <li id="nav-academic" class="nav-item">
+          <a id="link-academic">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 017.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 018.668 5.84 50.569 50.569 0 00-2.658.814m-15.482 0l4.858 1.458m10.624-1.458l-4.858 1.458m1.281 7.283a2.25 2.25 0 102.25 2.25 2.25 2.25 0 00-2.25-2.25z" />
+            </svg>
+            <span class="lang-txt" data-kh="លទ្ធផលសិក្សា" data-en="Academic Record">លទ្ធផលសិក្សា</span>
+          </a>
+        </li>
+        <li id="nav-announcements" class="nav-item">
+          <a id="link-announcements">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.357.205a.75.75 0 01-1.006-.203l-1.915-2.516a.75.75 0 00-1.002-.144l-.174.104a.75.75 0 01-1.007-.207l-.357-.55a.75.75 0 01.202-1.006l.175-.105a.75.75 0 00.144-1.002L3.98 12c-.203-.263-.104-.64.203-.807l.357-.205a.75.75 0 011.007.203l1.915 2.516a.75.75 0 001.002.144l.174-.105a.75.75 0 011.007.207l.357.55a.75.75 0 01-.202 1.006l-.175.105a.75.75 0 00-.144 1.002l1.915 2.516z" />
+            </svg>
+            <span class="lang-txt" data-kh="សេចក្តីប្រកាស" data-en="Announcements">សេចក្តីប្រកាស</span>
+          </a>
+        </li>
+        <li id="nav-directory" class="nav-item">
+          <a id="link-directory">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0110.089 20M14.214 16.058A8.006 8.006 0 0010 15a8.003 8.003 0 00-4.214 1.058M12 11.25a3 3 0 100-6 3 3 0 000 6zM6 16.25a4.125 4.125 0 00-7.533 2.493 9.307 9.307 0 004.122.953 9.38 9.38 0 002.625-.372M6 16.25V16a5.99 5.99 0 00-.788-3.07M6 16.25v.109a11.386 11.386 0 004.914 3.642" />
+            </svg>
+            <span class="lang-txt" data-kh="សមាជិកថ្នាក់រៀន" data-en="Class Directory">សមាជិកថ្នាក់រៀន</span>
+          </a>
+        </li>
+        <li id="nav-admin" class="nav-item" style="display: none;">
+          <a id="link-admin">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+            </svg>
+            <span class="lang-txt" data-kh="ការគ្រប់គ្រងប្រព័ន្ធ" data-en="System Admin">ការគ្រប់គ្រងប្រព័ន្ធ</span>
+          </a>
+        </li>
+        <li id="nav-settings" class="nav-item">
+          <a id="link-settings">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.936 6.936 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.645-.869l.214-1.28z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span class="lang-txt" data-kh="ការកំណត់" data-en="Settings">ការកំណត់</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="theme-lang-controls">
+          <button id="theme-toggle-btn" class="btn-control">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <span id="theme-btn-text">Dark Mode</span>
+          </button>
+          <button id="lang-toggle-btn" class="btn-control">
+            🌐 EN
+          </button>
+        </div>
+
+        <button id="logout-btn" class="btn-logout">
+          <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span class="lang-txt" data-kh="ចាកចេញ" data-en="Logout">ចាកចេញ</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT -->
+    <main class="main-viewport">
+      <!-- HEADER -->
+      <header class="app-header">
+        <div class="page-title-container">
+          <h1 id="header-page-title" class="lang-txt" data-kh="ផ្ទាំងគ្រប់គ្រង" data-en="Dashboard">ផ្ទាំងគ្រប់គ្រង</h1>
+        </div>
+
+        <div class="header-right-actions">
+          <!-- Notification Bell -->
+          <div class="notification-bell-container">
+            <button id="bell-btn" class="btn-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <div id="bell-badge" class="notification-badge"></div>
+            </button>
+
+            <!-- Dropdown -->
+            <div id="notification-dropdown" class="notification-dropdown">
+              <div class="notification-header lang-txt" data-kh="ការជូនដំណឹងថ្មីៗ" data-en="Recent Notifications">
+                ការជូនដំណឹងថ្មីៗ</div>
+              <div id="notification-list" class="notification-list">
+                <!-- Loaded dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT BODY -->
+      <section id="content-body" class="content-body">
+
+        <!-- 1. DASHBOARD VIEW -->
+        <div id="view-dashboard" class="view-section active">
+          <div class="dashboard-grid">
+            <!-- Dynamic stats loaded based on role -->
+            <div class="summary-card">
+              <div class="summary-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <div class="summary-card-info">
+                <span id="dashboard-stat1-value" class="summary-card-value">0</span>
+                <span id="dashboard-stat1-label" class="summary-card-label">Stat 1</span>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="summary-card-icon" style="background: rgba(16,185,129,0.1); color: var(--success);">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+              </div>
+              <div class="summary-card-info">
+                <span id="dashboard-stat2-value" class="summary-card-value">0</span>
+                <span id="dashboard-stat2-label" class="summary-card-label">Stat 2</span>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="summary-card-icon" style="background: rgba(245,158,11,0.1); color: var(--warning);">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <div class="summary-card-info">
+                <span id="dashboard-stat3-value" class="summary-card-value">0</span>
+                <span id="dashboard-stat3-label" class="summary-card-label">Stat 3</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Split Layout -->
+          <div class="dashboard-split-layout">
+            <!-- Left Side -->
+            <div id="dashboard-main-panel"></div>
+
+            <!-- Right Side -->
+            <div class="card-container">
+              <div class="card-header-flex">
+                <h3 id="panel-quickann-title" class="card-title">សេចក្តីប្រកាសចុងក្រោយ / Latest News</h3>
+              </div>
+              <div id="dashboard-announcements-list" style="display:flex;flex-direction:column;gap:16px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. MESSAGES VIEW -->
+        <div id="view-messages" class="view-section">
+          <div class="chat-container">
+            <!-- Chat sidebar list -->
+            <div class="chat-sidebar">
+              <div class="chat-search-bar">
+                <input type="text" id="chat-search-input" class="form-input"
+                  placeholder="ស្វែងរកប្រអប់សារ... / Search chats...">
+              </div>
+              <div id="chat-list" class="chat-list">
+                <!-- Dynamically loaded chat list -->
+              </div>
+            </div>
+
+            <!-- Main active conversation window -->
+            <div id="chat-window" class="chat-window">
+              <div class="chat-empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                <h3 class="lang-txt" data-kh="សូមជ្រើសរើសការសន្ទនាមួយ" data-en="Select a conversation">
+                  សូមជ្រើសរើសការសន្ទនាមួយ</h3>
+                <p class="lang-txt" data-kh="ដើម្បីចាប់ផ្តើមជជែក និងផ្លាស់ប្តូរព័ត៌មាន"
+                  data-en="To start messaging and exchanging updates">ដើម្បីចាប់ផ្តើមជជែក និងផ្លាស់ប្តូរព័ត៌មាន</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. ACADEMIC VIEW -->
+        <div id="view-academic" class="view-section">
+          <div id="academic-content-container"></div>
+        </div>
+
+        <!-- 4. ANNOUNCEMENTS VIEW -->
+        <div id="view-announcements" class="view-section">
+          <div class="card-header-flex" style="margin-bottom: 24px;">
+            <h2 class="lang-txt" data-kh="ព្រឹត្តិការណ៍ និងសេចក្តីជូនដំណឹងសាលា" data-en="School Events & Notices">
+              ព្រឹត្តិការណ៍ និងសេចក្តីជូនដំណឹងសាលា</h2>
+            <button id="create-announcement-trigger-btn" class="btn-primary lang-txt" data-kh="+ បង្កើតសេចក្តីប្រកាស"
+              data-en="+ New Announcement" style="display:none;">+ បង្កើតសេចក្តីប្រកាស</button>
+          </div>
+          <div id="announcements-grid" class="announcements-grid">
+            <!-- Announcements loaded here -->
+          </div>
+        </div>
+
+        <!-- SYSTEM ADMIN VIEW -->
+        <div id="view-admin" class="view-section">
+          <div class="dashboard-split-layout" style="display:flex; gap:24px; flex-wrap:wrap;">
+            
+            <!-- Left Side: Users List -->
+            <div class="card-container" style="flex: 2; min-width: 400px;">
+              <div class="card-header-flex" style="margin-bottom: 20px;">
+                <h3 class="card-title lang-txt" data-kh="គណនីប្រើប្រាស់ក្នុងប្រព័ន្ធ" data-en="System User Accounts">គណនីប្រើប្រាស់ក្នុងប្រព័ន្ធ</h3>
+                <input type="text" id="admin-user-search" class="form-input" style="max-width:200px;" placeholder="ស្វែងរកគណនី... / Search users...">
+              </div>
+              
+              <div class="table-responsive" style="overflow-x:auto;">
+                <table class="admin-table" style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+                  <thead>
+                    <tr style="border-bottom:2px solid var(--border-color); font-weight:700;">
+                      <th style="padding:12px;" class="lang-txt" data-kh="គណនី" data-en="User">គណនី</th>
+                      <th style="padding:12px;" class="lang-txt" data-kh="តួនាទី" data-en="Role">តួនាទី</th>
+                      <th style="padding:12px;" class="lang-txt" data-kh="អ៊ីមែល" data-en="Email">អ៊ីមែល</th>
+                      <th style="padding:12px;" class="lang-txt" data-kh="សិទ្ធិ/ទំនាក់ទំនង" data-en="Permissions/Link">សិទ្ធិ/ទំនាក់ទំនង</th>
+                      <th style="padding:12px;" class="lang-txt" data-kh="សកម្មភាព" data-en="Actions">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-users-tbody">
+                    <!-- Loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right Side: Add User Form -->
+            <div class="card-container" style="flex: 1; min-width: 280px; height: fit-content;">
+              <h3 class="card-title lang-txt" data-kh="បង្កើតគណនីថ្មី" data-en="Create New Account" style="margin-bottom: 20px;">បង្កើតគណនីថ្មី</h3>
+              <form id="admin-create-user-form" onsubmit="return false;">
+                
+                <div class="form-group">
+                  <label class="lang-txt" data-kh="ឈ្មោះគណនី" data-en="Username">ឈ្មោះគណនី</label>
+                  <input type="text" id="admin-new-username" class="form-input" required placeholder="e.g., teacher3">
+                </div>
+
+                <div class="form-group">
+                  <label class="lang-txt" data-kh="ឈ្មោះពេញ" data-en="Full Name">ឈ្មោះពេញ</label>
+                  <input type="text" id="admin-new-fullname" class="form-input" required placeholder="e.g., Keo Chenda">
+                </div>
+
+                <div class="form-group">
+                  <label class="lang-txt" data-kh="តួនាទី" data-en="Role">តួនាទី</label>
+                  <select id="admin-new-role" class="form-input" required>
+                    <option value="teacher">Teacher (គ្រូបង្រៀន)</option>
+                    <option value="parent">Parent (មាតាបិតា)</option>
+                    <option value="admin">Administrator (អ្នកគ្រប់គ្រង)</option>
+                  </select>
+                </div>
+
+                <!-- Fields for Parent only -->
+                <div id="admin-new-student-group" class="form-group" style="display: none;">
+                  <label class="lang-txt" data-kh="កូដសិស្ស" data-en="Student Code">កូដសិស្ស</label>
+                  <input type="text" id="admin-new-student-id" class="form-input" placeholder="e.g., STU003">
+                </div>
+
+                <div class="form-group">
+                  <label class="lang-txt" data-kh="ពាក្យសម្ងាត់" data-en="Password">ពាក្យសម្ងាត់</label>
+                  <input type="password" id="admin-new-password" class="form-input" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 10px 0; margin-top: 10px;">
+                  + <span class="lang-txt" data-kh="បង្កើតគណនី" data-en="Create Account">បង្កើតគណនី</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Excel Import/Export Panel -->
+            <div class="card-container" style="flex: 1; min-width: 280px; height: fit-content;">
+              <h3 class="card-title lang-txt" data-kh="នាំចូលសិស្សពី Excel" data-en="Import Students from Excel" style="margin-bottom: 15px;">នាំចូលសិស្សពី Excel</h3>
+              <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;" class="lang-txt" data-kh="លោកអ្នកអាចទាញយកឯកសារគំរូ Excel រៀបចំទិន្នន័យសិស្ស រួចបង្ហោះដើម្បីនាំចូលសិស្សក្នុងប្រព័ន្ធភ្លាមៗ។" data-en="You can download the Excel template, fill in student records, and upload it to import students instantly.">លោកអ្នកអាចទាញយកឯកសារគំរូ Excel រៀបចំទិន្នន័យសិស្ស រួចបង្ហោះដើម្បីនាំចូលសិស្សក្នុងប្រព័ន្ធភ្លាមៗ។</p>
+              
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button id="admin-download-template-btn" class="btn-primary" style="padding: 10px 0; background: var(--secondary); border-color: var(--secondary); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px; height:16px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                  <span class="lang-txt" data-kh="ទាញយកគំរូ Excel" data-en="Download Excel Template">ទាញយកគំរូ Excel</span>
+                </button>
+
+                <button id="admin-trigger-import-btn" class="btn-primary" style="padding: 10px 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px; height:16px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                  <span class="lang-txt" data-kh="នាំចូលឯកសារ Excel" data-en="Upload Excel File">នាំចូលឯកសារ Excel</span>
+                </button>
+                <input type="file" id="admin-import-file" accept=".xlsx, .xls, .csv" style="display: none;">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CLASS DIRECTORY VIEW -->
+        <div id="view-directory" class="view-section">
+          <div class="card-container">
+            <div class="card-header-flex" style="margin-bottom: 20px;">
+              <h3 class="card-title lang-txt" data-kh="សមាជិកថ្នាក់ និងអាណាព្យាបាល" data-en="Class Directory">សមាជិកថ្នាក់ និងអាណាព្យាបាល</h3>
+              <div style="display:flex; gap:12px; align-items:center;">
+                <button id="directory-delete-all-btn" class="btn-logout lang-txt" data-kh="លុបសិស្សទាំងអស់" data-en="Delete All Students" style="background: var(--danger); border-color: var(--danger); color: white; display: none; font-size: 12px; padding: 6px 12px; height: 34px; border-radius: var(--radius-sm); font-weight: 500;">
+                  លុបទាំងអស់
+                </button>
+                <select id="directory-class-selector" class="form-input" style="width:140px; display:none; padding: 6px 12px; font-size: 13px;">
+                  <!-- Loaded dynamically for teachers -->
+                </select>
+                <input type="text" id="directory-search-input" class="form-input" style="max-width:240px; padding: 6px 12px; font-size: 13px;" placeholder="ស្វែងរក... / Search...">
+              </div>
+            </div>
+            
+            <div id="directory-list-grid" class="student-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. SETTINGS VIEW -->
+        <div id="view-settings" class="view-section">
+          <div class="card-container" style="max-width: 600px;">
+            <h3 class="card-title lang-txt" data-kh="ការកំណត់ទូទៅ" data-en="General Settings"
+              style="margin-bottom:20px;">ការកំណត់ទូទៅ</h3>
+
+            <div class="settings-list">
+              <div class="settings-item">
+                <div class="settings-item-info">
+                  <span class="settings-item-title lang-txt" data-kh="ការជូនដំណឹងតាមសារថ្មី"
+                    data-en="New Message Notifications">ការជូនដំណឹងតាមសារថ្មី</span>
+                  <span class="settings-item-desc lang-txt" data-kh="ទទួលបានដំណឹងភ្លាមៗនៅពេលមានសារចូល"
+                    data-en="Receive immediate alerts when you receive a message">ទទួលបានដំណឹងភ្លាមៗនៅពេលមានសារចូល</span>
+                </div>
+                <input type="checkbox" id="setting-notify-message" checked
+                  style="width:20px;height:20px;accent-color:var(--primary);">
+              </div>
+
+              <div class="settings-item">
+                <div class="settings-item-info">
+                  <span class="settings-item-title lang-txt" data-kh="លទ្ធផលសិក្សារបស់សិស្ស"
+                    data-en="Student Academic Alerts">លទ្ធផលសិក្សារបស់សិស្ស</span>
+                  <span class="settings-item-desc lang-txt" data-kh="ទទួលបានដំណឹងនៅពេលមានការបញ្ចូលពិន្ទុថ្មី"
+                    data-en="Receive alerts when new scores are uploaded">ទទួលបានដំណឹងនៅពេលមានការបញ្ចូលពិន្ទុថ្មី</span>
+                </div>
+                <input type="checkbox" id="setting-notify-grades" checked
+                  style="width:20px;height:20px;accent-color:var(--primary);">
+              </div>
+
+              <div class="settings-item">
+                <div class="settings-item-info">
+                  <span class="settings-item-title lang-txt" data-kh="សេចក្តីប្រកាសរបស់សាលា"
+                    data-en="School Announcements">សេចក្តីប្រកាសរបស់សាលា</span>
+                  <span class="settings-item-desc lang-txt" data-kh="ទទួលបានដំណឹងស្តីពីព័ត៌មាន និងព្រឹត្តិការណ៍ថ្មីៗ"
+                    data-en="Receive updates about general school posts">ទទួលបានដំណឹងស្តីពីព័ត៌មាន
+                    និងព្រឹត្តិការណ៍ថ្មីៗ</span>
+                </div>
+                <input type="checkbox" id="setting-notify-announcements" checked
+                  style="width:20px;height:20px;accent-color:var(--primary);">
+              </div>
+            </div>
+          </div>
+
+          <!-- Google Sheets Backup / Sync Panel -->
+          <div class="card-container" style="max-width: 600px; margin-top: 24px;">
+            <h3 class="card-title lang-txt" data-kh="ការភ្ជាប់ទំនាក់ទំនងជាមួយ Google Sheets" data-en="Google Sheets Integration" style="margin-bottom:20px;">ការភ្ជាប់ទំនាក់ទំនងជាមួយ Google Sheets</h3>
+            
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label class="lang-txt" data-kh="តំណភ្ជាប់ Google Apps Script Web App URL" data-en="Google Apps Script Web App URL">តំណភ្ជាប់ Google Apps Script Web App URL</label>
+              <input type="url" id="setting-gsheet-url" class="form-input" placeholder="https://script.google.com/macros/s/.../exec">
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 15px;">
+              <button id="setting-gsheet-sync-btn" class="btn-primary lang-txt" data-kh="រក្សាទុកទិន្នន័យទៅ Sheets" data-en="Sync Data to Sheets" style="flex: 1; padding: 10px 0;">រក្សាទុកទិន្នន័យទៅ Sheets</button>
+              <button id="setting-gsheet-restore-btn" class="btn-primary lang-txt" data-kh="ទាញយកទិន្នន័យពី Sheets" data-en="Restore Data from Sheets" style="flex: 1; padding: 10px 0; background: var(--secondary); border-color: var(--secondary);">ទាញយកទិន្នន័យពី Sheets</button>
+            </div>
+
+            <details style="margin-top: 20px; font-size: 12px; color: var(--text-secondary); line-height: 1.6; border-top: 1px solid var(--border-color); padding-top: 15px;">
+              <summary style="cursor: pointer; font-weight: 600;" class="lang-txt" data-kh="របៀបដំឡើង និងភ្ជាប់ជាមួយ Google Sheets" data-en="How to setup Google Sheets sync">របៀបដំឡើង និងភ្ជាប់ជាមួយ Google Sheets</summary>
+              <ol style="margin-top: 8px; padding-left: 20px; display: flex; flex-direction: column; gap: 6px;">
+                <li>បង្កើត Google Sheet រួចចូលទៅកាន់ **Extensions > Apps Script**។</li>
+                <li>ចម្លងកូដ Apps Script ដាក់ចូលក្នុង script editor រួចចុច **Save**។</li>
+                <li>ចុច **Deploy > New Deployment** រួចជ្រើសរើសប្រភេទ **Web App**។</li>
+                <li>កំណត់ Execute as: **Me** និង Who has access: **Anyone**។</li>
+                <li>ចុច Deploy រួចចម្លង Web App URL មកដាក់ក្នុងប្រអប់ខាងលើ!</li>
+              </ol>
+            </details>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- 1. ADD / EDIT GRADE MODAL (TEACHER) -->
+  <div id="modal-grade" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header-flex">
+        <h3 id="modal-grade-title" class="modal-title">បញ្ចូលពិន្ទុថ្មី / Add Grade</h3>
+        <button id="modal-grade-close-btn" class="btn-close">✕</button>
+      </div>
+      <form id="grade-form" onsubmit="return false;">
+        <input type="hidden" id="grade-student-id">
+
+        <div class="form-group">
+          <label id="label-gradesubject" for="grade-subject">មុខវិជ្ជា / Subject</label>
+          <select id="grade-subject" class="form-input" required>
+            <option value="Math">Math (គណិតវិទ្យា)</option>
+            <option value="Khmer">Khmer (អក្សរសាស្ត្រខ្មែរ)</option>
+            <option value="Physics">Physics (រូបវិទ្យា)</option>
+            <option value="Chemistry">Chemistry (គីមីវិទ្យា)</option>
+            <option value="English">English (ភាសាអង់គ្លេស)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label id="label-gradescore" for="grade-score">ពិន្ទុ (០-១០០) / Score (0-100)</label>
+          <input type="number" id="grade-score" class="form-input" min="0" max="100" required placeholder="e.g., 85">
+        </div>
+
+        <div class="form-group">
+          <label id="label-graderemarks" for="student-remarks">មតិយោបល់របស់គ្រូ / Teacher's Remarks</label>
+          <textarea id="student-remarks" class="form-input" rows="3"
+            placeholder="e.g., Very active in class..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="modal-grade-cancel-btn" class="btn-secondary">បោះបង់ / Cancel</button>
+          <button type="submit" id="grade-submit-btn" class="btn-primary">រក្សាទុក / Save Score</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. CREATE ANNOUNCEMENT MODAL (TEACHER) -->
+  <div id="modal-announcement" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header-flex">
+        <h3 id="modal-announcement-title" class="modal-title">បង្កើតសេចក្តីប្រកាសថ្មី / New Announcement</h3>
+        <button id="modal-announcement-close-btn" class="btn-close">✕</button>
+      </div>
+      <form id="announcement-form" onsubmit="return false;">
+
+        <div class="form-group">
+          <label id="label-anntitlekh" for="ann-title-kh">ចំណងជើង (ភាសាខ្មែរ) / Title (Khmer)</label>
+          <input type="text" id="ann-title-kh" class="form-input" required placeholder="e.g., ការប្រឡងឆមាស">
+        </div>
+
+        <div class="form-group">
+          <label id="label-anntitleen" for="ann-title-en">ចំណងជើង (English) / Title (English)</label>
+          <input type="text" id="ann-title-en" class="form-input" required placeholder="e.g., Semester Exams">
+        </div>
+
+        <div class="form-group">
+          <label id="label-anncategory" for="ann-category">ប្រភេទ / Category</label>
+          <select id="ann-category" class="form-input" required>
+            <option value="Events">Events (ព្រឹត្តិការណ៍)</option>
+            <option value="Academic">Academic (ការសិក្សា)</option>
+            <option value="General">General (ទូទៅ)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label id="label-anndesckh" for="ann-content-kh">ខ្លឹមសារសេចក្តីប្រកាស (ភាសាខ្មែរ) / Content (Khmer)</label>
+          <textarea id="ann-content-kh" class="form-input" rows="3" required
+            placeholder="បញ្ចូលខ្លឹមសារនៅទីនេះ..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label id="label-anndescen" for="ann-content-en">ខ្លឹមសារសេចក្តីប្រកាស (English) / Content (English)</label>
+          <textarea id="ann-content-en" class="form-input" rows="3" required
+            placeholder="Enter English content here..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="modal-announcement-cancel-btn" class="btn-secondary">បោះបង់ / Cancel</button>
+          <button type="submit" id="announcement-submit-btn" class="btn-primary">បង្ហោះ / Post Notice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. PARENT CONNECT STUDENT MODAL -->
+  <div id="modal-link-student" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header-flex">
+        <h3 id="modal-link-title" class="modal-title">ភ្ជាប់គណនីទៅកាន់កូន / Link Child Profile</h3>
+        <button id="modal-link-close-btn" class="btn-close">✕</button>
+      </div>
+      <form id="link-student-form" onsubmit="return false;">
+
+        <div class="form-group">
+          <label id="label-linkcode" for="link-student-id">កូដសិស្ស (ឧទាហរណ៍៖ STU003) / Student Code (e.g.,
+            STU003)</label>
+          <input type="text" id="link-student-id" class="form-input" required placeholder="e.g., STU003">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="modal-link-cancel-btn" class="btn-secondary">បោះបង់ / Cancel</button>
+          <button type="submit" id="link-submit-btn" class="btn-primary">ភ្ជាប់ទំនាក់ទំនង / Link Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. EDIT PERMISSIONS / ASSIGNMENT MODAL (ADMIN) -->
+  <div id="modal-permissions" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header-flex">
+        <h3 class="modal-title lang-txt" data-kh="កំណត់សិទ្ធិគណនី" data-en="Edit User Account Permissions">កំណត់សិទ្ធិគណនី</h3>
+        <button id="modal-permissions-close-btn" class="btn-close">✕</button>
+      </div>
+      <form id="permissions-form" onsubmit="return false;">
+        <input type="hidden" id="permissions-username">
+        
+        <div class="form-group">
+          <label class="lang-txt" data-kh="ឈ្មោះគណនី" data-en="Username">ឈ្មោះគណនី</label>
+          <input type="text" id="permissions-new-username" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="lang-txt" data-kh="ពាក្យសម្ងាត់" data-en="Password">ពាក្យសម្ងាត់</label>
+          <input type="password" id="permissions-password" class="form-input" required placeholder="••••••••">
+        </div>
+
+        <div class="form-group">
+          <label class="lang-txt" data-kh="ឈ្មោះពេញ" data-en="Full Name">ឈ្មោះពេញ</label>
+          <input type="text" id="permissions-fullname" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="lang-txt" data-kh="អ៊ីមែល" data-en="Email">អ៊ីមែល</label>
+          <input type="email" id="permissions-email" class="form-input" required>
+        </div>
+
+        <!-- Teacher Classes field -->
+        <div id="permissions-classes-group" class="form-group">
+          <label class="lang-txt" data-kh="ថ្នាក់គ្រប់គ្រង (បំបែកដោយសញ្ញាក្បៀស)" data-en="Classes Managed (Comma separated)">ថ្នាក់គ្រប់គ្រង (បំបែកដោយសញ្ញាក្បៀស)</label>
+          <input type="text" id="permissions-classes" class="form-input" placeholder="e.g., 12A, 11B">
+        </div>
+
+        <!-- Parent Student Code field -->
+        <div id="permissions-student-group" class="form-group">
+          <label class="lang-txt" data-kh="កូដសិស្សភ្ជាប់ទំនាក់ទំនង" data-en="Linked Student Code">កូដសិស្សភ្ជាប់ទំនាក់ទំនង</label>
+          <input type="text" id="permissions-student-id" class="form-input" placeholder="e.g., STU001">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="modal-permissions-cancel-btn" class="btn-secondary lang-txt" data-kh="បោះបង់" data-en="Cancel">បោះបង់ / Cancel</button>
+          <button type="submit" class="btn-primary lang-txt" data-kh="រក្សាទុកការផ្លាស់ប្តូរ" data-en="Save Changes">រក្សាទុកការផ្លាស់ប្តូរ / Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- STUDENT EDIT MODAL -->
+  <div id="modal-student-edit" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header-flex">
+        <h3 class="modal-title lang-txt" data-kh="កែសម្រួលព័ត៌មានសិស្ស" data-en="Edit Student Info">កែសម្រួលព័ត៌មានសិស្ស</h3>
+        <button id="modal-student-edit-close-btn" class="btn-close">✕</button>
+      </div>
+      <form id="student-edit-form" onsubmit="return false;">
+        <input type="hidden" id="student-edit-original-id">
+        
+        <div class="form-group">
+          <label class="lang-txt" data-kh="កូដសិស្ស" data-en="Student ID">កូដសិស្ស</label>
+          <input type="text" id="student-edit-id" class="form-input" required readonly>
+        </div>
+        
+        <div class="form-group">
+          <label class="lang-txt" data-kh="ឈ្មោះភាសាខ្មែរ" data-en="Name KH">ឈ្មោះភាសាខ្មែរ</label>
+          <input type="text" id="student-edit-name-kh" class="form-input" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="lang-txt" data-kh="ឈ្មោះភាសាអង់គ្លេស" data-en="Name EN">Name EN</label>
+          <input type="text" id="student-edit-name-en" class="form-input" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="lang-txt" data-kh="ថ្នាក់រៀន" data-en="Class">ថ្នាក់រៀន</label>
+          <input type="text" id="student-edit-class" class="form-input" required>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" id="modal-student-edit-cancel-btn" class="btn-secondary lang-txt" data-kh="បោះបង់" data-en="Cancel">បោះបង់</button>
+          <button type="submit" class="btn-primary lang-txt" data-kh="រក្សាទុក" data-en="Save">រក្សាទុក</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="mockData.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
